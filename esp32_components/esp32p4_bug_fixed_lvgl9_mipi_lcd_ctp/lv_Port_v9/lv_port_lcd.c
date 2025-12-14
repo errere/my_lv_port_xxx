@@ -20,13 +20,15 @@
 
 #include "esp_lcd_st7796.h"
 
+#include "esp_attr.h"
+
 static const char *TAG = "lv_port_lcd_dsi";
 
 static esp_lcd_panel_handle_t mipi_dpi_panel = NULL;
 
-__attribute__((aligned(64))) static uint8_t buf_2_1[320 * LV_PORT_DISP_BUFFER_SIZE * 3];
+__attribute__((aligned(64))) static EXT_RAM_BSS_ATTR uint8_t buf_2_1[320 * LV_PORT_DISP_BUFFER_SIZE * 3];
 
-__attribute__((aligned(64))) static uint8_t buf_2_2[320 * LV_PORT_DISP_BUFFER_SIZE * 3];
+__attribute__((aligned(64))) static EXT_RAM_BSS_ATTR uint8_t buf_2_2[320 * LV_PORT_DISP_BUFFER_SIZE * 3];
 
 static void bsp_enable_dsi_phy_power(void)
 {
@@ -66,6 +68,14 @@ static void disp_flush(lv_display_t *disp_drv, const lv_area_t *area, uint8_t *p
 static void dsi_init()
 {
     bsp_enable_dsi_phy_power();
+
+    gpio_reset_pin(LCD_RST_PIN);
+    gpio_set_direction(LCD_RST_PIN, GPIO_MODE_OUTPUT);
+    gpio_set_level(LCD_RST_PIN, 0);
+    vTaskDelay(10);
+    gpio_set_level(LCD_RST_PIN, 1);
+    vTaskDelay(20);
+
 
     // create MIPI DSI bus first, it will initialize the DSI PHY as well
     esp_lcd_dsi_bus_handle_t mipi_dsi_bus;
