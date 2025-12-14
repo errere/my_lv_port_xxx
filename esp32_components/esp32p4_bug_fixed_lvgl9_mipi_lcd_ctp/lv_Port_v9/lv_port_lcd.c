@@ -69,14 +69,6 @@ static void dsi_init()
 {
     bsp_enable_dsi_phy_power();
 
-    gpio_reset_pin(LCD_RST_PIN);
-    gpio_set_direction(LCD_RST_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(LCD_RST_PIN, 0);
-    vTaskDelay(10);
-    gpio_set_level(LCD_RST_PIN, 1);
-    vTaskDelay(20);
-
-
     // create MIPI DSI bus first, it will initialize the DSI PHY as well
     esp_lcd_dsi_bus_handle_t mipi_dsi_bus;
     esp_lcd_dsi_bus_config_t bus_config = {
@@ -110,7 +102,7 @@ static void dsi_init()
     };
 
     esp_lcd_panel_dev_config_t lcd_dev_config = {
-        .reset_gpio_num = 22,
+        .reset_gpio_num = LCD_RST_PIN,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
         .bits_per_pixel = 24,
         .vendor_config = &vendor_config,
@@ -149,3 +141,4 @@ void lv_port_disp_init(void)
     ESP_ERROR_CHECK(esp_lcd_dpi_panel_register_event_callbacks(mipi_dpi_panel, &cbs, disp));
 }
 // for lvgl9
+
