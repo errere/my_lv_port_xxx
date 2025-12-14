@@ -8,7 +8,9 @@ extern "C"
 
 #include "lvgl.h"
 
-#define LV_PORT_DISP_BUFFER_SIZE 30 //缓冲区大小为100倍的LCD横向分辨率
+#define LCD_RST_PIN (24)
+
+#define LV_PORT_DISP_BUFFER_SIZE 480 // 缓冲区大小为100倍的LCD横向分辨率
 
     void lv_port_disp_init(void);
 
